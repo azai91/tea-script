@@ -39,7 +39,4 @@ var stringHandlers = {
 
 };
 
-
-
-
 module.exports = stringHandlers;

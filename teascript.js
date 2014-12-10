@@ -1,6 +1,7 @@
 var fs = require('fs'),
     findArrays = require('./classes/Array'),
-    utils = require('./utils');
+    utils = require('./utils'),
+    hoistVariables = require('./classes/Variables');
     // teascript = require('./nodeComp');
 
 var path = {
@@ -24,6 +25,7 @@ var writeFile = function (filePath, destPath) {
     buffer = utils.removeJSONQuotes(JSON.stringify(buffer));
     var bufferArray = utils.breakIntoLines(buffer);
     bufferArray = findArrays(bufferArray);
+    bufferArray = hoistVariables(bufferArray);
     console.log('bufferArray');
     console.log(bufferArray);
 
