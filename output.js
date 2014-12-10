@@ -1,4 +1,4 @@
 var array;
-for (var i = 1 ; i < 10; i++) {
-	array.push(i);
+for (var _i = 1 ; _i < 10; _i++) {
+  array.push(_i);
 }

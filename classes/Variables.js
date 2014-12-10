@@ -7,11 +7,11 @@ var variableHandler = {
 };
 
 //hoists non declared variables
-var hoistVariables = function (bufferString) {
+var hoistVariables = function (bufferLine) {
     var insideFunction = false,
         previousVariable;
 
-    for (var i = 0; i < bufferString.length; i++) {
+    for (var i = 0; i < bufferLine.length; i++) {
 
     }
 

@@ -2,9 +2,8 @@
 
 var stringHandlers = {
 
-  remvoeQuotes: function(bufferString) {
-    return bufferString.slice(1, bufferString - 1);
-
+  removeJSONQuotes: function(bufferString) {
+    return bufferString.slice(1, bufferString.length - 1);
   },
 
   removePreviousLine: function (bufferString) {
@@ -16,9 +15,28 @@ var stringHandlers = {
     }
   },
 
-  addQuotes: function(bufferString) {
+  addQuotes: function (bufferString) {
     return '"' + bufferString +'"';
+  },
+
+  /**
+   * breaks JSON buffer strings into lines and puts each line into array
+   * @return {[type]} [description]
+   */
+  breakIntoLines: function (bufferString) {
+    console.log(bufferString);
+    return bufferString.split('\\n');
+  },
+
+  /**
+   * joins Array into single string
+   * @param  {[type]} bufferArray [description]
+   * @return {[type]}             [description]
+   */
+  compileBackIntoOutputString: function (bufferArray) {
+    return bufferArray.join('\\n');
   }
+
 };
 
 

@@ -6,8 +6,36 @@ var arrayHandler = function() {
 
 };
 
-//finds
-var findArraysRanges = function (buffer) {
+var iterateThroughEachLine = function (bufferArray) {
+  var variableName;
+
+  for (var i = 0; i < bufferArray.length; i++) {
+    if (findArrayRanges(bufferArray[i])) {
+      console.log('once');
+      var rangeVariables = findArrayRanges(bufferArray[i]);
+      console.log(getVariableName(bufferArray[i].slice(0, rangeVariables[2])));
+      variableName = getVariableName(bufferArray[i].slice(0, rangeVariables[2]));
+      var array = bufferArray[i].slice(rangeVariables[0], rangeVariables[1]);
+
+      if (convertRangesToLoop(array, variableName)) {
+
+        console.log('variableName %d', variableName);
+        var forLoop = convertRangesToLoop(array, variableName);
+
+        bufferArray.splice(i,1, forLoop[0], forLoop[1], forLoop[2]);
+      }
+    }
+  }
+  console.log(bufferArray);
+  return bufferArray;
+}
+
+/**
+ * checks if line has full array
+ * @param  {[String]} [start of first bracket, end of bracket, position of constant before = sign (used for finding variable name)]
+ * @return {[type]}        [description]
+ */
+var findArrayRanges = function (buffer) {
   var leftSquareBracket = 0,
       rightSquareBracket = 0,
       insideBracket = false,
@@ -38,26 +66,11 @@ var findArraysRanges = function (buffer) {
     }
 
     if (leftSquareBracket === rightSquareBracket && insideBracket) {
-      console.log(leftSquareBracket);
-      console.log(rightSquareBracket);
-      insideBracket = false;
-      variableName = getVariableName(buffer.slice(0, recentVariableLetterPosition + 1));
-
-      console.log(variableName);
-      //array from buffer
-      var array = buffer.slice(startPosition, i + 1);
-
-      if (convertRangesToLoop(array, variableName)) {
-
-        console.log('buffer');
-        console.log(buffer.slice(0, i));
-        buffer = stringHandlers.removePreviousLine(buffer.slice(0, i));
-        buffer +=  convertRangesToLoop(array, variableName);
-      }
+      return [startPosition, i + 1, recentVariableLetterPosition + 1];
     }
   }
 
-  return buffer;
+  return false;
 };
 
 /**
@@ -65,7 +78,7 @@ var findArraysRanges = function (buffer) {
  * @type {[type]}
  */
 var convertRangesToLoop = function(arrayString, variableName) {
-  var compiledString = "";
+  var compiledStringArray;
   if (arrayString.match('...')) {
 
     //trim away brackets
@@ -76,30 +89,34 @@ var convertRangesToLoop = function(arrayString, variableName) {
     var rightBound = Number(arrayString.slice(ellipsisIndex + 3));
   }
   if (leftBound < rightBound) {
-    compiledString = 'for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {\\n' +
-              '\\t' + variableName + '.push(_i);\\n' +
-              '}\\n';
+    compiledStringArray = ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
+                      '  ' + variableName + '.push(_i);',
+                      '}'];
   } else if (leftBound > rightBound) {
-    compiledString = 'for (var _i = ' + rightBound +' ; _i >= ' + leftBound + '; _i--) {\\n' +
-              '\\t' + variableName + '.push(_i);\\n' +
-              '}\\n';
-  } else {
-    compiledString = '[]'
+    compiledStringArray = ['for (var _i = ' + rightBound +' ; _i > ' + leftBound + '; _i--) {',
+                      '  ' + variableName + '.push(_i);',
+                      '}'];
+  } else if (leftBound === rightBound) {
+    compiledStringArray = [];
   }
 
-  return compiledString || false;
+  return compiledStringArray || false;
 };
 
+/**
+ * gets variable name given variable name is at end of string (string = "var these")
+ * @type {[type]}
+ */
 var getVariableName = function(pastString) {
   console.log(pastString);
   for (var i = pastString.length - 1; i >= 0; i--) {
-    if ((pastString[i] === ' ')||(pastString[i] === 'n' && pastString[i - 1] === "\\")) {
+    if (pastString[i] === ' ') {
       return pastString.slice(i + 1);
     }
   }
 
-  return '';
+  return pastString;
 };
 
-module.exports = findArraysRanges;
+module.exports = iterateThroughEachLine;
 

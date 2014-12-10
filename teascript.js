@@ -21,8 +21,14 @@ var readFile = function (filePath, callback) {
 
 var writeFile = function (filePath, destPath) {
   readFile(filePath, function (buffer) {
-    console.log(JSON.stringify(buffer));
-    buffer = findArrays(JSON.stringify(buffer));
+    buffer = utils.removeJSONQuotes(JSON.stringify(buffer));
+    var bufferArray = utils.breakIntoLines(buffer);
+    bufferArray = findArrays(bufferArray);
+    console.log('bufferArray');
+    console.log(bufferArray);
+
+    buffer = utils.compileBackIntoOutputString(bufferArray);
+
     buffer = utils.addQuotes(buffer);
     console.log('buffer');
     console.log(buffer);
