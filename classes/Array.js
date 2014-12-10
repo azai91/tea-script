@@ -6,6 +6,7 @@ var arrayHandler = function() {
 
 };
 
+
 /**
  * checks each line of code and searches for arrayRanges [1..10].
  *
@@ -38,6 +39,7 @@ var iterateThroughEachLine = function (bufferArray) {
  * TODO: need to check if array spans multiple lines
  *
  * @param  {String} buffer [start of first bracket, end of bracket, position of constant before = sign (used for finding variable name)]
+
  * @return {[type]}        [description]
  */
 var findArrayRanges = function (buffer) {
@@ -47,11 +49,7 @@ var findArrayRanges = function (buffer) {
 
       //these two variables will be used to get variables name
       recentVariableLetterPosition = 0,
-      // recentWhiteSpacePosition = 0,
-
-      variableName,
-      startPosition,
-      equalsPosition;
+      startPosition;
 
   for (var i = 0; i < buffer.length; i++) {
     if (buffer[i] === '[') {
@@ -93,6 +91,7 @@ var convertRangesToLoop = function(bufferLine, variableName) {
     var leftBound = Number(bufferLine.slice(0, ellipsisIndex));
     var rightBound = Number(bufferLine.slice(ellipsisIndex + 3));
   }
+  console.log('leftBound %d, rightBound %d', leftBound, rightBound);
   if (leftBound < rightBound) {
     return ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
                       '  ' + variableName + '.push(_i);',
