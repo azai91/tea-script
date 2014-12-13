@@ -32,6 +32,7 @@ var iterateThroughEachLine = function (bufferArray) {
       console.log('variable name ', variableName);
 
       //looks for ellipses
+      //hasEllipsis returns [leftBound, rightBound, isInclusive]
       if (hasEllipsis(arrayInString)) {
         if (!isSliceable) {
           var boundVariables = hasEllipsis(arrayInString);
@@ -41,9 +42,9 @@ var iterateThroughEachLine = function (bufferArray) {
         }
         if (isSliceable) {
           var boundVariables = hasEllipsis(arrayInString);
-          forLoop = convertEllipsisToSlice(boundVariables[0], boundVariables[1], boundVariables[2], variableName);
-          bufferArray.splice(i,1);
-          bufferArray = utils.concatArrayInsideArray(forLoop, i, bufferArray);
+
+          //(leftBound, rightBound, isInclusive, beginning of bracket, end of bracket, bufferLine)
+          bufferArray[i] = convertEllipsisToSlice(boundVariables[0], boundVariables[1], boundVariables[2], rangeVariables[0], rangeVariables[1], bufferArray[i]);
         }
       }
 
@@ -60,7 +61,7 @@ var iterateThroughEachLine = function (bufferArray) {
  *
  * @param  {String} buffer [start of first bracket, end of bracket, position of constant before = sign (used for finding variable name, is sliceable]
 
- * @return {[type]}        [description]
+ * @return {[Mixed]}        [start of bracket, end of bracket, index of end of variable, isSliceable]
  */
 var findArrayRanges = function (buffer) {
   var leftSquareBracket = 0,
@@ -173,7 +174,15 @@ var convertEllipsisToForLoop = function (leftBound, rightBound, isInclusive, var
   }
 };
 
-var convertEllipsisToSlice = function (leftBound, rightBound, isInclusive, variableName) {
+/**
+ * [convertEllipsisToSlice description]
+ * @param  {[type]}  leftBound    [description]
+ * @param  {[type]}  rightBound   [description]
+ * @param  {Boolean} isInclusive  [description]
+ * @param  {[type]}  variableName [description]
+ * @return {[type]}               [description]
+ */
+var convertEllipsisToSlice = function (leftBound, rightBound, isInclusive, startBracket, endBracket, bufferLine) {
   console.log('leftBound %d, rightBound %d', leftBound, rightBound);
 
 
@@ -181,7 +190,7 @@ var convertEllipsisToSlice = function (leftBound, rightBound, isInclusive, varia
     rightBound++;
   }
 
-  return [ variableName + '.slice(' +leftBound + ',' + rightBound + ');'];
+  return bufferLine.slice(0,startBracket) + '.slice(' + leftBound + ', ' + rightBound + ')' + bufferLine.slice(endBracket);
 };
 
 /**
