@@ -33,7 +33,7 @@ var stringHandlers = {
    * @param  {[type]} bufferArray [description]
    * @return {[type]}             [description]
    */
-  compileBackIntoOutputString: function (bufferArray) {
+  compileArrayBackIntoString: function (bufferArray) {
     return bufferArray.join('\\n');
   }
 

@@ -5,8 +5,13 @@ var fs = require('fs'),
     utils = require('./utils'),
     hoistVariables = require('./classes/Variables');
 
-var teascript = require('./index');
 
+/**
+ * reads tea file and passes content of file to callback
+ *
+ * @param  {String}   filePath location of tea file
+ * @param  {Function} callback
+ */
 var readFile = function (filePath, callback) {
   fs.readFile(filePath, function(err, buffer) {
     if (err) {
@@ -19,26 +24,65 @@ var readFile = function (filePath, callback) {
 }
 
 /**
+ * converts input to JSON, removes outermost quotes, and places each line into an index of an array
+ *
+ * @param {String} bufferString input from file
+ * @return {[String]} stringified version of each line
+ */
+var preprocessInput = function (bufferString) {
+  bufferString = utils.removeJSONQuotes(JSON.stringify(bufferString));
+  return utils.breakIntoLines(bufferString);
+};
+
+/**
+ * converts processed array back into single string ready to be written to output file
+ *
+ * @param  {[String]} bufferArray
+ * @return {String}
+ */
+var postprocessInput = function (bufferArray) {
+  var buffer = utils.compileArrayBackIntoString(bufferArray);
+  return JSON.parse(utils.addQuotes(buffer));
+}
+
+
+/**
+ * moves undeclared variables to top of scope
+ *
+ * @param  {[String]} bufferArray
+ * @return {[String]} processed array
+ */
+var processForVariables = function (bufferArray) {
+ return hoistVariables(bufferArray);
+};
+
+/**
+ * converts CS array styles into JS
+ *
+ * @param {[String]} bufferArray - array containing each line of input string
+ * @return {[String]} processed array
+ */
+var processForArrays = function (bufferArray) {
+  return findArrays(bufferArray);
+};
+
+/**
  * write complete file to
- * @param  {[type]} filePath [description]
- * @param  {[type]} destPath [description]
+ *
+ * @param  {[type]} filePath - [description]
+ * @param  {[type]} destPath - [description]
  * @return {[type]}          [description]
  */
 var writeFile = function (filePath, destPath) {
   readFile(filePath, function (buffer) {
-    buffer = utils.removeJSONQuotes(JSON.stringify(buffer));
-    var bufferArray = utils.breakIntoLines(buffer);
-    bufferArray = findArrays(bufferArray);
-    bufferArray = hoistVariables(bufferArray);
-    console.log('bufferArray');
-    console.log(bufferArray);
+    var bufferArray = preprocessInput(buffer);
+    bufferArray = processForArrays(bufferArray);
+    bufferArray = processForVariables(bufferArray);
 
-    buffer = utils.compileBackIntoOutputString(bufferArray);
-
-    buffer = utils.addQuotes(buffer);
+    buffer = postprocessInput(bufferArray);
     console.log('buffer');
     console.log(buffer);
-    fs.writeFile(destPath, JSON.parse(buffer), function(err) {
+    fs.writeFile(destPath, buffer, function(err) {
       if (err) {
         console.log(err);
       }
