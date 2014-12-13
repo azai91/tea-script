@@ -15,10 +15,7 @@ var hoistVariables = function (bufferArray) {
 
     for (var i = 0; i < bufferArray.length; i++) {
       if (hasVariableName(bufferArray[i])) {
-
         variableName = hasVariableName(bufferArray[i]);
-
-        console.log(variableName);
 
         if (!isVariableDeclared(bufferArray[i], variableName)) {
           undeclaredVariableList.push('var ' + variableName + ';');
