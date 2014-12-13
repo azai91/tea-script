@@ -21,6 +21,7 @@ var stringHandlers = {
 
   /**
    * breaks JSON buffer strings into lines and puts each line into array
+   *
    * @return {[type]} [description]
    */
   breakIntoLines: function (bufferString) {

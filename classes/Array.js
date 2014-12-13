@@ -14,17 +14,24 @@ var arrayHandler = function() {
  * @return {[String]} Array of each line of script after accounting for array changes
  */
 var iterateThroughEachLine = function (bufferArray) {
-  var variableName;
+  var variableName,
+      rangeVariables,
+      arrayInString,
+      forLoop;
 
   for (var i = 0; i < bufferArray.length; i++) {
+
+    /*
+      finds if array is present in array
+     */
     if (findArrayRanges(bufferArray[i])) {
-      var rangeVariables = findArrayRanges(bufferArray[i]);
+      rangeVariables = findArrayRanges(bufferArray[i]);
       variableName = getVariableName(bufferArray[i].slice(0, rangeVariables[2]));
-      var array = bufferArray[i].slice(rangeVariables[0], rangeVariables[1]);
+      arrayInString = bufferArray[i].slice(rangeVariables[0], rangeVariables[1]);
 
-      if (convertRangesToLoop(array, variableName)) {
+      if (convertRangesToLoop(arrayInString, variableName)) {
 
-        var forLoop = convertRangesToLoop(array, variableName);
+        forLoop = convertRangesToLoop(arrayInString, variableName);
 
         bufferArray.splice(i,1, forLoop[0], forLoop[1], forLoop[2]);
       }
@@ -82,28 +89,63 @@ var findArrayRanges = function (buffer) {
  * @return {[String] | boolean} array containing each line of for loop.
  */
 var convertRangesToLoop = function(bufferLine, variableName) {
-  if (bufferLine.match('...')) {
+  var isInclusive = false,
+      ellipsisIndex,
+      leftBound,
+      rightBound;
 
-    //trim away brackets
-    bufferLine = bufferLine.slice(1, bufferLine.length - 1);
+      //trim away brackets
+      bufferLine = bufferLine.slice(1, bufferLine.length - 1);
 
-    var ellipsisIndex = bufferLine.indexOf('...');
-    var leftBound = Number(bufferLine.slice(0, ellipsisIndex));
-    var rightBound = Number(bufferLine.slice(ellipsisIndex + 3));
+      console.log('line %s', bufferLine);
+      console.log(bufferLine.match(/\.\./g));
+  if (bufferLine.match(/\.\.\./g)) {
+
+
+    ellipsisIndex = bufferLine.indexOf('...');
+    console.log('exclusive');
+    leftBound = Number(bufferLine.slice(0, ellipsisIndex));
+    rightBound = Number(bufferLine.slice(ellipsisIndex + 3));
+  } else if (bufferLine.match(/\.\./g)) {
+    console.log('inclusive');
+    isInclusive = true;
+    ellipsisIndex = bufferLine.indexOf('..');
+    leftBound = Number(bufferLine.slice(0, ellipsisIndex));
+    rightBound = Number(bufferLine.slice(ellipsisIndex + 2));
   }
+
   console.log('leftBound %d, rightBound %d', leftBound, rightBound);
-  if (leftBound < rightBound) {
-    return ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
-                      '  ' + variableName + '.push(_i);',
-                      '}'];
+
+  if (!isInclusive) {
+    if (leftBound < rightBound) {
+      return ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
+              '  ' + variableName + '.push(_i);',
+              '}'];
+    }
+    if (leftBound > rightBound) {
+      return ['for (var _i = ' + leftBound +' ; _i > ' + rightBound + '; _i--) {',
+              '  ' + variableName + '.push(_i);',
+              '}'];
+    }
+    if (leftBound === rightBound) {
+      return [];
+    }
   }
-  if (leftBound > rightBound) {
-    return ['for (var _i = ' + rightBound +' ; _i > ' + leftBound + '; _i--) {',
-                      '  ' + variableName + '.push(_i);',
-                      '}'];
-  }
-  if (leftBound === rightBound) {
-    return [];
+
+  if (isInclusive) {
+    if (leftBound < rightBound) {
+      return ['for (var _i = ' + leftBound +' ; _i <= ' + rightBound + '; _i++) {',
+              '  ' + variableName + '.push(_i);',
+              '}'];
+    }
+    if (leftBound > rightBound) {
+      return ['for (var _i = ' + leftBound +' ; _i >= ' + rightBound + '; _i--) {',
+              '  ' + variableName + '.push(_i);',
+              '}'];
+    }
+    if (leftBound === rightBound) {
+      return [];
+    }
   }
 
   return false;
