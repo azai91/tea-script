@@ -1,3 +1,4 @@
 var array;
-array = [1...10];
 test = 5;
+array = [1...10];
+

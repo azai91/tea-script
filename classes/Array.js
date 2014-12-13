@@ -6,33 +6,38 @@ var arrayHandler = function() {
 
 };
 
+/**
+ * checks each line of code and searches for arrayRanges [1..10].
+ *
+ * @param  {[String]} bufferArray Array of each line of script
+ * @return {[String]} Array of each line of script after accounting for array changes
+ */
 var iterateThroughEachLine = function (bufferArray) {
   var variableName;
 
   for (var i = 0; i < bufferArray.length; i++) {
     if (findArrayRanges(bufferArray[i])) {
-      console.log('once');
       var rangeVariables = findArrayRanges(bufferArray[i]);
-      console.log(getVariableName(bufferArray[i].slice(0, rangeVariables[2])));
       variableName = getVariableName(bufferArray[i].slice(0, rangeVariables[2]));
       var array = bufferArray[i].slice(rangeVariables[0], rangeVariables[1]);
 
       if (convertRangesToLoop(array, variableName)) {
 
-        console.log('variableName %d', variableName);
         var forLoop = convertRangesToLoop(array, variableName);
 
         bufferArray.splice(i,1, forLoop[0], forLoop[1], forLoop[2]);
       }
     }
   }
-  console.log(bufferArray);
+
   return bufferArray;
-}
+};
 
 /**
- * checks if line has full array
- * @param  {[String]} [start of first bracket, end of bracket, position of constant before = sign (used for finding variable name)]
+ * checks if line has array brackets
+ * TODO: need to check if array spans multiple lines
+ *
+ * @param  {String} buffer [start of first bracket, end of bracket, position of constant before = sign (used for finding variable name)]
  * @return {[type]}        [description]
  */
 var findArrayRanges = function (buffer) {
@@ -50,11 +55,9 @@ var findArrayRanges = function (buffer) {
 
   for (var i = 0; i < buffer.length; i++) {
     if (buffer[i] === '[') {
-
       leftSquareBracket++;
       insideBracket = true;
       startPosition = i;
-      //gets potential variable name
     }
     if (buffer[i] === ']') {
       rightSquareBracket++;
@@ -74,33 +77,37 @@ var findArrayRanges = function (buffer) {
 };
 
 /**
- * verifies if array has ellipsis.
- * @type {[type]}
+ * verifies if array has ellipsis (...). returns false if ellipsis not found
+ *
+ * @param {String} bufferLine
+ * @param {String} variableName name of variable associcated with array
+ * @return {[String] | boolean} array containing each line of for loop.
  */
-var convertRangesToLoop = function(arrayString, variableName) {
-  var compiledStringArray;
-  if (arrayString.match('...')) {
+var convertRangesToLoop = function(bufferLine, variableName) {
+  if (bufferLine.match('...')) {
 
     //trim away brackets
-    arrayString = arrayString.slice(1, arrayString.length - 1);
+    bufferLine = bufferLine.slice(1, bufferLine.length - 1);
 
-    var ellipsisIndex = arrayString.indexOf('...');
-    var leftBound = Number(arrayString.slice(0, ellipsisIndex));
-    var rightBound = Number(arrayString.slice(ellipsisIndex + 3));
+    var ellipsisIndex = bufferLine.indexOf('...');
+    var leftBound = Number(bufferLine.slice(0, ellipsisIndex));
+    var rightBound = Number(bufferLine.slice(ellipsisIndex + 3));
   }
   if (leftBound < rightBound) {
-    compiledStringArray = ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
+    return ['for (var _i = ' + leftBound +' ; _i < ' + rightBound + '; _i++) {',
                       '  ' + variableName + '.push(_i);',
                       '}'];
-  } else if (leftBound > rightBound) {
-    compiledStringArray = ['for (var _i = ' + rightBound +' ; _i > ' + leftBound + '; _i--) {',
+  }
+  if (leftBound > rightBound) {
+    return ['for (var _i = ' + rightBound +' ; _i > ' + leftBound + '; _i--) {',
                       '  ' + variableName + '.push(_i);',
                       '}'];
-  } else if (leftBound === rightBound) {
-    compiledStringArray = [];
+  }
+  if (leftBound === rightBound) {
+    return [];
   }
 
-  return compiledStringArray || false;
+  return false;
 };
 
 /**
@@ -108,7 +115,6 @@ var convertRangesToLoop = function(arrayString, variableName) {
  * @type {[type]}
  */
 var getVariableName = function(pastString) {
-  console.log(pastString);
   for (var i = pastString.length - 1; i >= 0; i--) {
     if (pastString[i] === ' ') {
       return pastString.slice(i + 1);

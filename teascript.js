@@ -1,45 +1,14 @@
-var fs = require('fs'),
-    findArrays = require('./classes/Array'),
-    utils = require('./utils'),
-    hoistVariables = require('./classes/Variables');
-    // teascript = require('./nodeComp');
+'use strict';
+
+var writeFile = require('./nodeComp');
 
 var path = {
   source: __dirname + '/sample.js',
   dest: __dirname +'/output.js'
 };
 
-var readFile = function (filePath, callback) {
-  fs.readFile(filePath, function(err, buffer) {
-    if (err) {
-      console.log(err);
-    }
-    if (callback !== undefined) {
-      callback(buffer.toString());
-    }
-  });
-}
-
-var writeFile = function (filePath, destPath) {
-  readFile(filePath, function (buffer) {
-    buffer = utils.removeJSONQuotes(JSON.stringify(buffer));
-    var bufferArray = utils.breakIntoLines(buffer);
-    bufferArray = findArrays(bufferArray);
-    bufferArray = hoistVariables(bufferArray);
-    console.log('bufferArray');
-    console.log(bufferArray);
-
-    buffer = utils.compileBackIntoOutputString(bufferArray);
-
-    buffer = utils.addQuotes(buffer);
-    console.log('buffer');
-    console.log(buffer);
-    fs.writeFile(destPath, JSON.parse(buffer), function(err) {
-      if (err) {
-        console.log(err);
-      }
-    });
-  });
+var start = function (filePath, destPath) {
+  writeFile(filePath, destPath);
 };
 
-writeFile(path.source, path.dest);
+start(path.source, path.dest);
