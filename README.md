@@ -10,7 +10,7 @@ Coffeescript has been growing in popularity because of the brevity of the langua
 
 - [ ] Teascript Compiler
   - [x] JS to JS
-    - [ ] Array Features
+    - [ ] Array Features (Single Line)
       - [x] Exclusive Array Ranges [1...10]
       - [ ] Inclusive Array Ranges [1..10]
       - [ ] Expanded
