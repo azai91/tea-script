@@ -38,12 +38,13 @@ var hoistVariables = function (bufferArray) {
     if (hasVariableName(bufferArray[i])) {
       variableName = hasVariableName(bufferArray[i]);
 
+      console.log(variableName);
+
       if (!isVariableDeclared(bufferArray[i], variableName)) {
         var space = "";
-        for (var i = 0; i < undeclaredVariableList.length; i++) {
+        for (var scopeCounter = 0; scopeCounter < undeclaredVariableList.length - 1; scopeCounter++) {
           space += "  ";
         }
-
         undeclaredVariableList[undeclaredVariableList.length - 1][2].push(space + 'var ' + variableName + ';');
       }
     }
