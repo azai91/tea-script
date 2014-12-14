@@ -39,7 +39,12 @@ var hoistVariables = function (bufferArray) {
       variableName = hasVariableName(bufferArray[i]);
 
       if (!isVariableDeclared(bufferArray[i], variableName)) {
-        undeclaredVariableList[undeclaredVariableList.length - 1][2].push('var ' + variableName + ';');
+        var space = "";
+        for (var i = 0; i < undeclaredVariableList.length; i++) {
+          space += "  ";
+        }
+
+        undeclaredVariableList[undeclaredVariableList.length - 1][2].push(space + 'var ' + variableName + ';');
       }
     }
     //end of scope, not first line
