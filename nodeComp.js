@@ -76,8 +76,8 @@ var processForArrays = function (bufferArray) {
 var writeFile = function (filePath, destPath) {
   readFile(filePath, function (buffer) {
     var bufferArray = preprocessInput(buffer);
-    bufferArray = processForArrays(bufferArray);
     bufferArray = processForVariables(bufferArray);
+    bufferArray = processForArrays(bufferArray);
 
     buffer = postprocessInput(bufferArray);
     console.log('buffer');

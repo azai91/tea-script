@@ -18,7 +18,7 @@ Coffeescript has been growing in popularity because of the brevity of the langua
       - [ ] Compressed
     - [ ] Variable Features
         - [ ] Undeclare variables are hoisted to the top of the script and declared
-        - [ ] Declared variables are not impacted
+        - [ ] Declared variables are not impacted (need to fix)
     - [ ] Switch Statements
     - [ ]
 

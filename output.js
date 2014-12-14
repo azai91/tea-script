@@ -1,8 +1,13 @@
 var test;
-var array;
-test = 5;
-var regularArray = [1,2,3];
-for (var _i = 10 ; _i >= 1; _i--) {
-  array.push(_i);
+var five;
+var arr = [1,2,3,4];
+
+for (var _i = 1 ; _i <= 10; _i++) {
+  test.push(_i);
 }
-var num = numbers.slice(1, 11);
+
+var small = big.slice(1, 12);
+
+five = 5;
+
+var six = 6;
