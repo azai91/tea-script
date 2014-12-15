@@ -1,5 +1,3 @@
-'use strict';
-
 var utils = {
 
   removeJSONQuotes: function(bufferString) {

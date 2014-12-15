@@ -1,5 +1,3 @@
-'use strict';
-
 var fs = require('fs'),
     findArrays = require('./classes/Array'),
     utils = require('./utils'),
