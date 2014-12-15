@@ -1,5 +1,3 @@
-
-
 var iterateEachLine = function (bufferArray) {
   var inComment = false;
 
@@ -16,7 +14,11 @@ var iterateEachLine = function (bufferArray) {
         bufferArray[i] = convertFrontBlockComments(bufferArray[i]);
         inComment = true;
       }
+    } else if (hasLineComments(bufferArray[i])) {
+      bufferArray[i] = convertLineComments(bufferArray[i]);
     }
+
+
   }
 
   return bufferArray;
@@ -51,7 +53,8 @@ var convertEndBlockComments = function (bufferLine) {
 };
 
 var convertLineComments = function (bufferLine) {
-
+  var indexOfComment = bufferLine.indexOf('#');
+  return bufferLine.slice(0, indexOfComment);
 };
 
 module.exports = iterateEachLine;
