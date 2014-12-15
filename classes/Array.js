@@ -13,7 +13,7 @@ var arrayHandler = function() {
  * @param  {[String]} bufferArray Array of each line of script
  * @return {[String]} Array of each line of script after accounting for array changes
  */
-var iterateThroughEachLine = function (bufferArray) {
+var iterateEachLine = function (bufferArray) {
   var variableName,
       rangeVariables,
       arrayInString,
@@ -207,5 +207,5 @@ var getVariableName = function (pastString) {
   return pastString;
 };
 
-module.exports = iterateThroughEachLine;
+module.exports = iterateEachLine;
 
