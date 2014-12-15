@@ -3,7 +3,8 @@
 var fs = require('fs'),
     findArrays = require('./classes/Array'),
     utils = require('./utils'),
-    hoistVariables = require('./classes/Variables');
+    hoistVariables = require('./classes/Variables'),
+    parseComments = require('./classes/Comments');
 
 
 /**
@@ -66,6 +67,10 @@ var processForArrays = function (bufferArray) {
   return findArrays(bufferArray);
 };
 
+var processForComments = function (bufferArray) {
+  return parseComments(bufferArray);
+};
+
 /**
  * write complete file to
  *
@@ -78,6 +83,7 @@ var writeFile = function (filePath, destPath) {
     var bufferArray = preprocessInput(buffer);
     bufferArray = processForVariables(bufferArray);
     bufferArray = processForArrays(bufferArray);
+    bufferArray = processForComments(bufferArray);
 
     buffer = postprocessInput(bufferArray);
     console.log('buffer');
