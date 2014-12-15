@@ -1,6 +1,6 @@
 'use strict';
 
-var stringHandlers = {
+var utils = {
 
   removeJSONQuotes: function(bufferString) {
     return bufferString.slice(1, bufferString.length - 1);
@@ -36,9 +36,27 @@ var stringHandlers = {
    */
   compileArrayBackIntoString: function (bufferArray) {
     return bufferArray.join('\\n');
+  },
+
+  /**
+   * concats array into the middle of another array
+   *
+   * @param {Array} smallArray - array to be inserted into larger array
+   * @param {Integer} index - index where smallArray will insert into
+   * @param {Array} largeArray - array that will have elements inserted into it
+   * @return {Array} complete array
+   */
+  concatArrayInsideArray: function (smallArray, index, largeArray) {
+    var cloneLargeArray = largeArray.slice(0);
+
+    for (var i = smallArray.length - 1; i >= 0; i--) {
+      cloneLargeArray.splice(index,0,smallArray[i]);
+    }
+
+    return cloneLargeArray;
   }
 
 };
 
 
-module.exports = stringHandlers;
+module.exports = utils;

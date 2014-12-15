@@ -12,10 +12,13 @@ Coffeescript has been growing in popularity because of the brevity of the langua
   - [x] JS to JS
     - [ ] Array Features (Single Line)
       - [x] Exclusive Array Ranges [1...10]
-      - [ ] Inclusive Array Ranges [1..10]
-      - [ ] Expanded
-      - [ ] Compact
+      - [x] Inclusive Array Ranges [1..10]
+      - [ ] Exclusive Array Slice
+      - [ ] Inclusive Array Slice (need to modify string instead of line of array);
       - [ ] Compressed
     - [ ] Variable Features
         - [ ] Undeclare variables are hoisted to the top of the script and declared
-        - [ ] Declared variables are not impacted
+        - [ ] Declared variables are not impacted (need to fix)
+    - [ ] Switch Statements
+    - [ ]
+
