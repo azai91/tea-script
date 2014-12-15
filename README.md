@@ -9,16 +9,29 @@ Coffeescript has been growing in popularity because of the brevity of the langua
 ### Project Scope
 
 - [ ] Teascript Compiler
-  - [x] JS to JS
-    - [ ] Array Features (Single Line)
-      - [x] Exclusive Array Ranges [1...10]
-      - [x] Inclusive Array Ranges [1..10]
-      - [ ] Exclusive Array Slice
-      - [ ] Inclusive Array Slice (need to modify string instead of line of array);
-      - [ ] Compressed
-    - [ ] Variable Features
-        - [ ] Undeclare variables are hoisted to the top of the script and declared
-        - [ ] Declared variables are not impacted (need to fix)
-    - [ ] Switch Statements
-    - [ ]
+  - [ ] Functions
+  - [ ] Objects and Arrays
+    - [x] Exclusive Array Ranges [1...10]
+    - [x] Inclusive Array Ranges [1..10]
+  - [ ] Lexical Scoping and Variable Safety
+  - [ ] If, Else, Unless, and Conditional Assignment
+  - [ ] Splats
+  - [ ] Loops and Comprehensions
+  - [ ] Array Slicing and Splicing with Ranges
+    - [x] Exclusive Array Slice
+    - [x] Inclusive Array Slice
+  - [ ] Everything is an Expression
+  - [ ] Operators and Aliases
+  - [ ] The Existential Operator
+  - [ ] Class, Inheritence, and Super
+  - [ ] Destructuring Assignment
+  - [ ] Function binding
+  - [ ] Embedded JavaScript
+  - [ ] Switch/When/Else
+  - [ ] Try/Catch/Finally
+  - [ ] Chained Comparisons
+  - [ ] String Interpolation, Block Strings, and Block Comments
+  - [ ] Block Regular Expressions
+
+[Coffescript Website](http://coffeescript.org/)
 
