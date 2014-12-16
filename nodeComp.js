@@ -1,8 +1,9 @@
-var fs             = require('fs'),
-    parseArrays    = require('./classes/Array'),
-    utils          = require('./utils'),
-    parseVariables = require('./classes/Variables'),
-    parseComments  = require('./classes/Comments');
+var fs                = require('fs'),
+    parseArrays       = require('./classes/Array'),
+    utils             = require('./utils'),
+    parseVariables    = require('./classes/Variables'),
+    parseComments     = require('./classes/Comments');
+    parseConditionals = require('./classes/Conditionals');
 
 /**
  * converts input to JSON, removes outermost quotes, and places each line into an index of an array
@@ -36,6 +37,7 @@ var processDataString = function (bufferArray) {
   bufferArray = parseVariables(bufferArray);
   bufferArray = parseArrays(bufferArray);
   bufferArray = parseComments(bufferArray);
+  bufferArray = parseConditionals(bufferArray);
 
   return bufferArray;
 };
