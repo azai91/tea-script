@@ -14,16 +14,25 @@ var iterateEachLine = function (bufferArray) {
       var ifVariableName = getFirstVariableName(afterIf)[0];
       var afterIfVariableName = getFirstVariableName(afterIf)[1];
 
-      // if (hasAnd(afterIfVariableName)) {
-      //   var afterIf = hasIf(bufferArray[i]);
-      //   var ifVariableName = getFirstVariableName(afterIf)[0];
-      //   var afterIfVariableName = getFirstVariableName(afterIf)[1];
+      //if there is an AND on the same line
+      if (hasAnd(afterIfVariableName)) {
+        var afterAnd = hasAnd(bufferArray[i]);
+        var andVariableName = getFirstVariableName(afterAnd)[0];
+        var afterIfVariableName = getFirstVariableName(afterAnd)[1];
 
-      // }
+        var result = ['if (' + ifVariableName + ' && ' + andVariableName + ') {',
+                      '  ' + beforeIf,
+                      '}'];
+      }
 
-      var result = ['if (' + ifVariableName + ') {',
-                    beforeIf,
-                    '}'];
+      //if there is no AND
+      else {
+        var result = ['if (' + ifVariableName + ') {',
+                      '  ' + beforeIf,
+                      '}'];
+      }
+
+
 
       console.log(result);
       bufferArray.splice(i,1);
@@ -42,7 +51,7 @@ var hasIf = function (bufferLine) {
 
 var hasAnd = function (bufferLine) {
   var indexOfAnd = bufferLine.indexOf(' and ');
-  return indexOfIf !== - 1 ? bufferLine.slice(indexOfAnd) : false;
+  return indexOfAnd !== - 1 ? bufferLine.slice(indexOfAnd) : false;
 };
 
 var getFirstVariableName = function (bufferLine) {
