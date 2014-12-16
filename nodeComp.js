@@ -1,28 +1,8 @@
-'use strict';
-
-var fs = require('fs'),
-    findArrays = require('./classes/Array'),
-    utils = require('./utils'),
-    hoistVariables = require('./classes/Variables'),
-    parseComments = require('./classes/Comments');
-
-
-/**
- * reads tea file and passes content of file to callback
- *
- * @param  {String}   filePath location of tea file
- * @param  {Function} callback
- */
-var readFile = function (filePath, callback) {
-  fs.readFile(filePath, function(err, buffer) {
-    if (err) {
-      console.log(err);
-    }
-    if (callback !== undefined) {
-      callback(buffer.toString());
-    }
-  });
-}
+var fs             = require('fs'),
+    parseArrays    = require('./classes/Array'),
+    utils          = require('./utils'),
+    parseVariables = require('./classes/Variables'),
+    parseComments  = require('./classes/Comments');
 
 /**
  * converts input to JSON, removes outermost quotes, and places each line into an index of an array
@@ -44,31 +24,20 @@ var preprocessInput = function (bufferString) {
 var postprocessInput = function (bufferArray) {
   var buffer = utils.compileArrayBackIntoString(bufferArray);
   return JSON.parse(utils.addQuotes(buffer));
-}
-
+};
 
 /**
- * moves undeclared variables to top of scope
+ * runs parsing function for each class
  *
  * @param  {[String]} bufferArray
- * @return {[String]} processed array
+ * @return {[String]}
  */
-var processForVariables = function (bufferArray) {
- return hoistVariables(bufferArray);
-};
+var processDataString = function (bufferArray) {
+  bufferArray = parseVariables(bufferArray);
+  bufferArray = parseArrays(bufferArray);
+  bufferArray = parseComments(bufferArray);
 
-/**
- * converts CS array styles into JS
- *
- * @param {[String]} bufferArray - array containing each line of input string
- * @return {[String]} processed array
- */
-var processForArrays = function (bufferArray) {
-  return findArrays(bufferArray);
-};
-
-var processForComments = function (bufferArray) {
-  return parseComments(bufferArray);
+  return bufferArray;
 };
 
 /**
@@ -79,20 +48,21 @@ var processForComments = function (bufferArray) {
  * @return {[type]}          [description]
  */
 var writeFile = function (filePath, destPath) {
-  readFile(filePath, function (buffer) {
-    var bufferArray = preprocessInput(buffer);
-    bufferArray = processForVariables(bufferArray);
-    bufferArray = processForArrays(bufferArray);
-    bufferArray = processForComments(bufferArray);
 
-    buffer = postprocessInput(bufferArray);
-    console.log('buffer');
-    console.log(buffer);
-    fs.writeFile(destPath, buffer, function(err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+  //read tea file
+  var buffer = fs.readFileSync(filePath);
+  buffer = buffer.toString();
+
+  var bufferArray = preprocessInput(buffer);
+  bufferArray = processDataString(bufferArray);
+
+  buffer = postprocessInput(bufferArray);
+
+  console.log(buffer);
+  fs.writeFile(destPath, buffer, function(err) {
+    if (err) {
+      console.log(err);
+    }
   });
 };
 
